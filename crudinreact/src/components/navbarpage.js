@@ -1,0 +1,59 @@
+import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import axios from 'axios';
+const NavbarPage = () => {
+
+    let value = 1;
+
+    // const [username,setUser] = useState([]);
+    let username = "";
+    if (localStorage.getItem('user')) {
+        // setUser(localStorage.getItem('user'));
+        username = localStorage.getItem('user');
+        // console.log(user);
+        value = 0;
+    }
+
+    const Logout = () => {
+        localStorage.removeItem("user");
+        value=1;
+    }
+
+    const logincredential = () => {
+        if (value == 1) {
+            return <NavLink className="btn btn-outline-light " exact to="/loginpage"><b>Login</b></NavLink>;
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-8 mt-1">
+                        <NavLink className="text-white text-decoration-none" exact to="/userprofilepage">
+                           Hii {username}
+                        </NavLink>
+                    </div>
+                    <div className="col-4">
+                        <button className="btn btn-primary" onClick={Logout}>
+                            logout
+                        </button>
+                    </div>
+                </div>
+            )
+        }
+    }
+    return (
+        <nav className="navbar navbar-expand-lg navbar-dark bg-info ">
+            <div className="container ">
+                <NavLink className="navbar-brand " exact to="#">Navbar Logo</NavLink>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li className="nav-item">
+                            <NavLink className="nav-link" exact to="/">Home </NavLink>
+                        </li>
+                    </ul>
+                </div>
+                {logincredential()}
+            </div>
+        </nav>
+    )
+}
+
+export default NavbarPage;
