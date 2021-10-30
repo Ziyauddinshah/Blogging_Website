@@ -4,7 +4,6 @@ import axios from 'axios';
 const NavbarPage = () => {
 
     let value = 1;
-
     // const [username,setUser] = useState([]);
     let username = "";
     if (localStorage.getItem('user')) {
@@ -17,15 +16,15 @@ const NavbarPage = () => {
     const Logout = () => {
         localStorage.removeItem("user");
         value=1;
+        window.location.reload(false);
     }
-
     const logincredential = () => {
         if (value == 1) {
             return <NavLink className="btn btn-outline-light " exact to="/loginpage"><b>Login</b></NavLink>;
         } else {
             return (
                 <div className="row">
-                    <div className="col-8 mt-1">
+                    <div className="col-6 mt-1">
                         <NavLink className="text-white text-decoration-none" exact to="/userprofilepage">
                            Hii {username}
                         </NavLink>
@@ -42,11 +41,13 @@ const NavbarPage = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-info ">
             <div className="container ">
-                <NavLink className="navbar-brand " exact to="#">Navbar Logo</NavLink>
+                <NavLink className="navbar-brand " exact to="/">
+                    <h3 className="text-danger">Social Baatein</h3>
+                    </NavLink>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <NavLink className="nav-link" exact to="/">Home </NavLink>
+                            <NavLink className="nav-link " exact to="/"><h6> Home </h6></NavLink>
                         </li>
                     </ul>
                 </div>
