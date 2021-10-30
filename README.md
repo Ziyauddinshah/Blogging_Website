@@ -1,4 +1,4 @@
-# crud_in_reactjs_mysql
+# Blogging_Website
 
 Features are included in this app: 
 1: User login and logout along with registration for new new user(note: refresh page to see changes) 
