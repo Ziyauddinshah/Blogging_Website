@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from 'react-router-dom';
+import { NavLink,Redirect } from 'react-router-dom';
 import axios from "axios";
-
-// import Link from 'bootstrap';
 
 const LoginPage = () => {
 
@@ -18,32 +16,21 @@ const LoginPage = () => {
             password: password
         }).then((response) => {
             if (response.data.message) {
-                setLogincre(response.data.message);
+                setLogincre(response.data.message);   
             }
             else {
                 localStorage.setItem('user', response.data[0].firstname);
-                // const token = setEmailorUserid({
-                //     emailoruserid
-                // });
-                // setToken(token);
+                // window.location.reload(false);
                 setLogincre(response.data[0]);
             }
         });
     };
 
-    // useEffect( () =>{
-    //     axios.get('http://localhost:3001/loginpage')
-    //     .then((response) =>{
-    //         // console.log(error);
-    //         console.log(response.data);
-    //     })
-    // },[]);
-
     const logincredential = () => {
         if (logincre == 'Wrong login credentials!') {
             return <h6 className="text-danger">Wrong login credentials!</h6>;
         } else if (logincre.firstname) {
-            return <h6 className="text-dark">Login Successfully..</h6>;
+            return <h6 className="text-success">Login Successfully..</h6>;
         } else if (logincre == 'User does not exist!') {
             return <h6 className="text-danger">User does not exist!!</h6>;
         }
@@ -85,10 +72,6 @@ const LoginPage = () => {
                 </div>
             </form>
         </div>
-
     )
 }
 export default LoginPage;
-// LoginPage.propTypes = {
-//     setToken: PropTypes.func.isRequired
-//   };
