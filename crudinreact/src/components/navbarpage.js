@@ -26,7 +26,7 @@ const NavbarPage = () => {
                 <div className="row">
                     <div className="col-6 mt-1">
                         <NavLink className="text-white text-decoration-none" exact to="/userprofilepage">
-                           Hii {username}
+                           Hi {username}
                         </NavLink>
                     </div>
                     <div className="col-4">
@@ -42,7 +42,11 @@ const NavbarPage = () => {
         <nav className="navbar navbar-expand-lg navbar-dark bg-info ">
             <div className="container ">
                 <NavLink className="navbar-brand " exact to="/">
+<<<<<<< HEAD
                     <h3 className="text-danger">Social Baatein</h3>
+=======
+                    <h4 className="text-danger fw-bold">Social Baatein</h4>
+>>>>>>> b83ca934 (doing more changes)
                     </NavLink>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">

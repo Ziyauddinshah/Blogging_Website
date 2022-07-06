@@ -28,7 +28,7 @@ const LoginPage = () => {
 
     const logincredential = () => {
         if (logincre == 'Wrong login credentials!') {
-            return <h6 className="text-danger">Wrong login credentials!</h6>;
+            return <h6 className="text-danstartger">Wrong login credentials!</h6>;
         } else if (logincre.firstname) {
             return <h6 className="text-success">Login Successfully..</h6>;
         } else if (logincre == 'User does not exist!') {
@@ -74,4 +74,8 @@ const LoginPage = () => {
         </div>
     )
 }
+<<<<<<< HEAD
 export default LoginPage;
+=======
+export default LoginPage;
+>>>>>>> b83ca934 (doing more changes)
