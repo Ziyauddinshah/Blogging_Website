@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { getAllCommentsOfOnePost } from "../redux/actions";
+import {
+  addCommentAction,
+  deleteCommentAction,
+  editCommentAction,
+  getAllCommentsOfOnePostAction,
+} from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { addComment } from "../services/postService";
-import { editCommentService } from "../services/postService";
+// import {
+//   addCommentService,
+//   editCommentService,
+//   deleteCommentService,
+// } from "../services/postService";
+
 import "../commentPageCss.css";
 
 const CommentPage = (props) => {
@@ -20,14 +29,17 @@ const CommentPage = (props) => {
   commentDataForOnePost = commentDataForOnePost.data;
   // adding comment into database
 
-  const AddComment = (postid) => {
+  const addComment = (postid) => {
     if (localStorage.getItem("userName")) {
-      addComment(postid, comment).then((response) => {
-        if (response.data.message) {
-          setComment("");
-          alert(response.data.message);
-        }
-      });
+      const jwt_token = localStorage.getItem("jwt_token");
+      const data = {
+        post_uuid: postid,
+        comment_text: comment,
+        jwt_token: jwt_token,
+      };
+      dispatch(addCommentAction(data));
+      setComment("");
+      alert("Comment Added");
     } else {
       alert("Login first!");
     }
@@ -51,10 +63,10 @@ const CommentPage = (props) => {
     if (props.loggedInUserId) {
       setLoggedInUserId(props.loggedInUserId);
     }
-    dispatch(getAllCommentsOfOnePost(postId));
+    dispatch(getAllCommentsOfOnePostAction(postId));
   }, [postId, dispatch, props]);
 
-  const editComment = (comment_uuid, post_id, user_id, comment_text) => {
+  const editComment = (comment_uuid, user_id, comment_text) => {
     if (loggedInUserId === user_id) {
       setCommentEdit(!commentEdit);
       setEditCommentId(comment_uuid);
@@ -65,48 +77,34 @@ const CommentPage = (props) => {
     }
   };
 
-  const saveComment = (comment_uuid, post_id, user_id) => {
+  const saveComment = (comment_uuid, user_id) => {
     if (loggedInUserId === user_id) {
-      console.log("save comment ", editCommentText);
       setEditCommentId(comment_uuid);
-      // console.log(
-      //   "comment_id: " +
-      //     comment_uuid +
-      //     ", post_id: " +
-      //     post_id +
-      //     ", user_id: " +
-      //     user_id
-      // );
-      editCommentService(comment_uuid, post_id, user_id, editCommentText).then(
-        (response) => {
-          if (response.data.message) {
-            setCommentEdit(!commentEdit);
-            alert(response.data.message);
-            setEditCommentText(editCommentText);
-          }
-        }
-      );
+      const jwt_token = localStorage.getItem("jwt_token");
+      const data = { comment_uuid: comment_uuid, jwt_token: jwt_token };
+      dispatch(editCommentAction(data));
+      setCommentEdit(!commentEdit);
+      alert("Comment Edited");
+      setEditCommentText(editCommentText);
     } else {
       alert("You can not edit other's comment");
       setCommentEdit(!commentEdit);
     }
   };
-  const deleteComment = (comment_uuid, post_id, user_id) => {
+
+  const deleteComment = (comment_uuid, user_id) => {
     if (loggedInUserId === user_id) {
-      console.log("delete comment ");
-      console.log(
-        "comment_id: " +
-          comment_uuid +
-          ", post_id: " +
-          post_id +
-          ", user_id: " +
-          user_id
-      );
+      const jwt_token = localStorage.getItem("jwt_token");
+      if (window.confirm("Do you want to delete this?")) {
+        const data = { comment_uuid: comment_uuid, jwt_token: jwt_token };
+        dispatch(deleteCommentAction(data));
+      }
     } else {
       alert("You can not delete other's comment");
       setCommentEdit(!commentEdit);
     }
   };
+
   return (
     <>
       <div
@@ -130,7 +128,7 @@ const CommentPage = (props) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => AddComment(props.postid)}
+                onClick={() => addComment(props.postid)}
               >
                 Add
               </button>
@@ -192,12 +190,10 @@ const CommentPage = (props) => {
                                 commentEdit
                                   ? saveComment(
                                       value.comment_uuid,
-                                      value.post_id,
                                       value.user_id
                                     )
                                   : editComment(
                                       value.comment_uuid,
-                                      value.post_id,
                                       value.user_id,
                                       value.comment_text
                                     )
@@ -212,11 +208,7 @@ const CommentPage = (props) => {
                               type="button"
                               className="btn btn-light btn-sm"
                               onClick={() =>
-                                deleteComment(
-                                  value.comment_uuid,
-                                  value.post_id,
-                                  value.user_id
-                                )
+                                deleteComment(value.comment_uuid, value.user_id)
                               }
                             >
                               ❌

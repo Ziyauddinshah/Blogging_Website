@@ -11,6 +11,7 @@ const addPost = (createpost, username) => {
     username: username,
   });
 };
+
 const editPost = (post_uuid, post_text) => {
   let config = {
     headers: {
@@ -26,7 +27,7 @@ const editPost = (post_uuid, post_text) => {
   );
 };
 
-const addComment = (postid, comment_text) => {
+const addCommentService = (postid, comment_text) => {
   let config = {
     headers: {
       authorization: "Bearer " + localStorage.getItem("jwt_token"),
@@ -42,7 +43,7 @@ const addComment = (postid, comment_text) => {
   );
 };
 
-const editCommentService = (comment_id, post_id, user_id, comment_text) => {
+const editCommentService = (comment_id, user_id, comment_text) => {
   let config = {
     headers: {
       authorization: "Bearer " + localStorage.getItem("jwt_token"),
@@ -50,12 +51,27 @@ const editCommentService = (comment_id, post_id, user_id, comment_text) => {
   };
   return axios.put(
     `http://localhost:3005/comments/edit?comment_uuid=${comment_id}`,
-    { comment_text: comment_text, post_id: post_id, user_id: user_id },
+    { comment_text: comment_text },
     config
   );
 };
-const deletePost = (postid) => {
-  return axios.delete(`http://localhost:3001/deletepost/${postid}`);
+
+const deleteCommentService = (comment_uuid, jwt_token) => {
+  let config = {
+    headers: {
+      authorization: "Bearer " + jwt_token,
+    },
+  };
+  return axios.delete(
+    `http://localhost:3005/comments/delete?comment_uuid=${comment_uuid}`,
+    config
+  );
 };
 
-export { addPost, editPost, addComment, editCommentService, deletePost };
+export {
+  addPost,
+  editPost,
+  addCommentService,
+  editCommentService,
+  deleteCommentService,
+};

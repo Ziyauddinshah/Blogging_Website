@@ -69,8 +69,8 @@ export const deletePost = createAsyncThunk(
   }
 );
 
-export const getAllCommentsOfOnePost = createAsyncThunk(
-  "getAllCommentsOfOnePost",
+export const getAllCommentsOfOnePostAction = createAsyncThunk(
+  "getAllCommentsOfOnePostAction",
   async (postid, { rejectWithValue }) => {
     let config = {
       headers: {
@@ -84,6 +84,72 @@ export const getAllCommentsOfOnePost = createAsyncThunk(
     try {
       const result = await response;
       return result.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const addCommentAction = createAsyncThunk(
+  "addCommentAction",
+  async (data, { rejectWithValue }) => {
+    const config = {
+      headers: {
+        authorization: "Bearer " + data.jwt_token,
+      },
+    };
+    const response = await axios.post(
+      "http://localhost:3005/comments/add",
+      {
+        post_uuid: data.post_uuid,
+        comment_text: data.comment_text,
+      },
+      config
+    );
+    try {
+      const result = await response.data;
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+export const editCommentAction = createAsyncThunk(
+  "editCommentAction",
+  async (data, { rejectWithValue }) => {
+    const config = {
+      headers: {
+        authorization: "Bearer " + data.jwt_token,
+      },
+    };
+    const response = axios.put(
+      `http://localhost:3005/comments/edit?comment_uuid=${data.comment_uuid}`,
+      { comment_text: data.comment_text },
+      config
+    );
+    try {
+      const result = await response.data;
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+export const deleteCommentAction = createAsyncThunk(
+  "deleteCommentAction",
+  async (data, { rejectWithValue }) => {
+    let config = {
+      headers: {
+        authorization: "Bearer " + data.jwt_token,
+      },
+    };
+    const response = await axios.delete(
+      `http://localhost:3005/comments/delete?comment_uuid=${data.comment_uuid}`,
+      config
+    );
+    try {
+      const result = await response.data;
+      return result;
     } catch (error) {
       return rejectWithValue(error);
     }

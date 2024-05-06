@@ -105,8 +105,9 @@ async function deleteComment(req, res, next) {
                 message: "Something went wrong in deleteComment, syntax error",
               });
             } else {
+              getAll(req, res, next);
               // console.log("result2: ", result2);
-              res.status(200).json({ message: "Comment deleted successfully" });
+              // res.status(200).json({ message: "Comment deleted successfully" });
             }
           });
         }
@@ -120,7 +121,6 @@ async function deleteComment(req, res, next) {
 async function getAllCommentsByPostId(req, res, next) {
   try {
     const post_id = req.query.post_id;
-    // console.log(post_id);
     const query = "select * FROM comments WHERE post_id=?";
     sql.query(query, [post_id], (error, result) => {
       if (error) {
@@ -129,7 +129,7 @@ async function getAllCommentsByPostId(req, res, next) {
             "Something went wrong in getAllCommentsByPostId, syntax error",
         });
       } else {
-        console.log("result: ", result);
+        // console.log("result: ", result);
         if (result.length < 1) {
           res.status(202).json({
             data: result,

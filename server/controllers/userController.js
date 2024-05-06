@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 
 async function getAll(req, res, next) {
   try {
-    // console.log(res.locals.email);
     const query = "SELECT * from users order by id asc";
     sql.query(query, [], (error, result) => {
       if (error) {
@@ -70,7 +69,6 @@ async function login(req, res, next) {
             message: "user with given email does not exist",
           });
         } else {
-          // console.log("result: ", result[0].password);
           const user_password = result[0].password;
           const user_id = result[0].id;
           const user_uuid = result[0].uuid;

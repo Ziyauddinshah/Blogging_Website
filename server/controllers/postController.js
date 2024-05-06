@@ -32,7 +32,7 @@ async function addPost(req, res, next) {
       "insert into posts(post_uuid, user_id, post_text) values(f_new_uuid(),?,?)";
     sql.query(query, [user_id, post_text], (error, result) => {
       if (error) {
-        console.log("error in addPost: ", error);
+        // console.log("error in addPost: ", error);
         return res
           .status(202)
           .send({ message: "Something went wrong in addPost1, syntax error" });
@@ -50,7 +50,6 @@ async function editPost(req, res, next) {
   try {
     const post_uuid = req.query.post_uuid;
     const post_text = req.body.post_text;
-    console.log(post_uuid, post_text);
     const query1 = "select * from posts where post_uuid=?";
     const query2 = "update posts set post_text=? where post_uuid=?";
     sql.query(query1, [post_uuid], (error1, result1) => {
