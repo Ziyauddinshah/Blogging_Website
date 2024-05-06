@@ -70,7 +70,7 @@ async function editComment(req, res, next) {
                 message: "Something went wrong in editComment, syntax error",
               });
             } else {
-              console.log("result2: ", result2);
+              // console.log("result2: ", result2);
               res.status(200).json({ message: "Comment edited successfully" });
             }
           });
@@ -133,7 +133,7 @@ async function getAllCommentsByPostId(req, res, next) {
         if (result.length < 1) {
           res.status(202).json({
             data: result,
-            message: "no comment found with given post_id",
+            message: "No comment found with given post_id",
           });
         } else {
           res.status(200).json({ data: result, message: "success" });

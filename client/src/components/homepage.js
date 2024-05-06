@@ -32,8 +32,7 @@ const HomePage = () => {
 
   // adding post into database
   const AddPost = () => {
-    const name = localStorage.getItem("userName");
-    if (name) {
+    if (userName) {
       const dataToPost = {
         post_text: postText,
         token: token,
