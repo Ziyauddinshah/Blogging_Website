@@ -89,7 +89,6 @@ export const getAllCommentsOfOnePostAction = createAsyncThunk(
     }
   }
 );
-
 export const addCommentAction = createAsyncThunk(
   "addCommentAction",
   async (data, { rejectWithValue }) => {
@@ -122,7 +121,7 @@ export const editCommentAction = createAsyncThunk(
         authorization: "Bearer " + data.jwt_token,
       },
     };
-    const response = axios.put(
+    const response = await axios.put(
       `http://localhost:3005/comments/edit?comment_uuid=${data.comment_uuid}`,
       { comment_text: data.comment_text },
       config

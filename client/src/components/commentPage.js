@@ -81,7 +81,11 @@ const CommentPage = (props) => {
     if (loggedInUserId === user_id) {
       setEditCommentId(comment_uuid);
       const jwt_token = localStorage.getItem("jwt_token");
-      const data = { comment_uuid: comment_uuid, jwt_token: jwt_token };
+      const data = {
+        comment_uuid: comment_uuid,
+        comment_text: editCommentText,
+        jwt_token: jwt_token,
+      };
       dispatch(editCommentAction(data));
       setCommentEdit(!commentEdit);
       alert("Comment Edited");
