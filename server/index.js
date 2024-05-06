@@ -84,7 +84,7 @@ app.delete("/deletepost/:postid",(request,response) =>{
     const DeletePost = "DELETE from posts where postid = ?";
     db.query(DeletePost,[deletepostid],(err,result) => {
         if(err) {
-            console.log(error)
+            console.log(err)
             // response.send(err);
         }
         else{

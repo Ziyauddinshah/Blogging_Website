@@ -1,0 +1,9 @@
+.outer {background-color:rgb(239, 232, 232);}
+.outer > * {
+  display:inline-block;
+  vertical-align:top;
+  color: black;
+  padding: 2px;
+}
+.one {width:75%;margin-left: 1px;margin-right: 2px; }
+.two {width:20%; }
