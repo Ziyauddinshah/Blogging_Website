@@ -8,17 +8,14 @@ async function getAll(req, res, next) {
     const query = "SELECT * from users order by id asc";
     sql.query(query, [], (error, result) => {
       if (error) {
-        // console.error("error in getAll users: ", error);
         return res.status(400).send({
           message: "Something went wrong in getAll users, syntax error",
         });
       } else {
         if (result.length < 1) {
-          // console.log("result: ", result);
-          res.status(401).json({ message: "no user available" });
+          res.status(401).json({ message: "No user available" });
         } else {
-          // console.log("result: ", result);
-          res.status(200).json({ message: result });
+          res.status(200).json({ result: result });
         }
       }
     });

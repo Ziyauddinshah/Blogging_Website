@@ -1,4 +1,12 @@
 import axios from "axios";
+const getAllUserService = (token) => {
+  const config = {
+    headers: {
+      authorization: "Bearer " + token,
+    },
+  };
+  return axios.get("http://localhost:3005/users/get-all", config);
+};
 const login = (emailId, password) => {
   return axios.post("http://localhost:3005/users/login", {
     email: emailId,
@@ -20,4 +28,4 @@ const user_id_from_token = (token) => {
   };
   return axios.get("http://localhost:3005/users/id_from_token", config);
 };
-export { login, register, user_id_from_token };
+export { getAllUserService, login, register, user_id_from_token };

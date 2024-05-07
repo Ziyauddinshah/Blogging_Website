@@ -36,7 +36,7 @@ const PostPage = (props) => {
   };
 
   //edit post
-  const EditPost = (postid, user_id) => {
+  const EditPost = (postid, user_id, user_name) => {
     let username = localStorage.getItem("userName");
     if (username === null) {
       alert("Unauthorize user!");
@@ -48,6 +48,7 @@ const PostPage = (props) => {
               post_uuid: postid,
               user_id: user_id,
               post_text: props.post_text,
+              user_name: user_name,
             },
           });
         }
@@ -75,14 +76,16 @@ const PostPage = (props) => {
           >
             <div className="d-flex justify-content-between">
               <div>
-                <b>User Id: {props.user_id}</b>
+                <b>User Name: {props.user_name}</b>
               </div>
               <div>
                 <button
                   type="submit"
                   style={{ marginRight: 5 + "px" }}
                   className="btn btn-primary"
-                  onClick={() => EditPost(props.post_uuid, props.user_id)}
+                  onClick={() =>
+                    EditPost(props.post_uuid, props.user_id, props.user_name)
+                  }
                 >
                   ✏️
                 </button>
@@ -104,6 +107,7 @@ const PostPage = (props) => {
             index={props.index}
             postid={props.post_uuid}
             loggedInUserId={loggedInUserId}
+            user_name={props.user_name}
           />
         </div>
       </div>

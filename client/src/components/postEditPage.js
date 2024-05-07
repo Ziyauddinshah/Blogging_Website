@@ -43,7 +43,7 @@ const PostEditPage = () => {
           >
             <div className="bg-light d-flex justify-content-between">
               <div>
-                <b>User Id: {location.state.user_id}</b>
+                <b>User Name: {location.state.user_name}</b>
               </div>
               <div>
                 <Link
