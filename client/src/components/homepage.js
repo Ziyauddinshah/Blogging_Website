@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPost, getPosts } from "../redux/actions";
+import { getPostAction, addPostAction } from "../redux/actions";
 import { Navigate } from "react-router-dom";
 import PostPage from "./postPage";
 
@@ -14,7 +14,7 @@ const HomePage = () => {
   }
   if (postDataFromDB) postDataFromDB = postDataFromDB.data;
   useEffect(() => {
-    dispatch(getPosts());
+    dispatch(getPostAction());
   }, [dispatch]);
 
   const [userName, setUserName] = useState("");
@@ -37,7 +37,7 @@ const HomePage = () => {
         post_text: postText,
         token: token,
       };
-      dispatch(addPost(dataToPost));
+      dispatch(addPostAction(dataToPost));
     } else {
       alert("Login to post");
     }

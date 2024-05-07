@@ -1,44 +1,37 @@
 import React, { useState, useEffect } from "react";
 import {
   addCommentAction,
-  deleteCommentAction,
   editCommentAction,
+  deleteCommentAction,
   getAllCommentsOfOnePostAction,
 } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   addCommentService,
-//   editCommentService,
-//   deleteCommentService,
-// } from "../services/postService";
 
 import "../commentPageCss.css";
 
 const CommentPage = (props) => {
   const dispatch = useDispatch();
-  const [comment, setComment] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [addCommentText, setAddCommentText] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [commentEdit, setCommentEdit] = useState(false);
   const [editCommentText, setEditCommentText] = useState("");
   const [editCommentId, setEditCommentId] = useState("");
-  const [postId, setPostId] = useState("");
 
   let { commentDataForOnePost } = useSelector((state) => state.comment);
   commentDataForOnePost = commentDataForOnePost.data;
-  // adding comment into database
 
+  // adding comment into database
   const addComment = (postid) => {
-    if (localStorage.getItem("userName")) {
+    if (loggedInUserId) {
       const jwt_token = localStorage.getItem("jwt_token");
       const data = {
         post_uuid: postid,
-        comment_text: comment,
+        comment_text: addCommentText,
         jwt_token: jwt_token,
       };
       dispatch(addCommentAction(data));
-      setComment("");
+      setAddCommentText("");
       alert("Comment Added");
     } else {
       alert("Login first!");
@@ -46,25 +39,19 @@ const CommentPage = (props) => {
   };
 
   const handleToggleComment = (postid) => {
-    if (showComments) {
-      setPostId("");
-      setShowComments(false);
+    if (!showComments) {
+      dispatch(getAllCommentsOfOnePostAction(postid));
+      setShowComments(!showComments);
     } else {
-      setPostId(postid);
-      setShowComments(true);
+      setShowComments(!showComments);
     }
   };
 
   useEffect(() => {
-    const jwt_token = localStorage.getItem("jwt_token");
-    if (jwt_token) {
-      setIsLoggedIn(true);
-    }
     if (props.loggedInUserId) {
       setLoggedInUserId(props.loggedInUserId);
     }
-    dispatch(getAllCommentsOfOnePostAction(postId));
-  }, [postId, dispatch, props]);
+  }, [props]);
 
   const editComment = (comment_uuid, user_id, comment_text) => {
     if (loggedInUserId === user_id) {
@@ -113,7 +100,7 @@ const CommentPage = (props) => {
     <>
       <div
         key={props.index}
-        className="form-group bg-dark card row shadow rounded mb-2"
+        className="form-group bg-dark card row shadow rounded"
       >
         <div className="mb-3 mt-3">
           <div className="row">
@@ -122,16 +109,16 @@ const CommentPage = (props) => {
                 type="text"
                 className="form-control"
                 placeholder="Add comment.."
-                value={comment}
+                value={addCommentText}
                 onChange={(e) => {
-                  setComment(e.target.value);
+                  setAddCommentText(e.target.value);
                 }}
               />
             </div>
             <div className="col-3 col-md-3">
               <button
                 type="button"
-                className="btn btn-primary"
+                className="form-control btn btn-primary"
                 onClick={() => addComment(props.postid)}
               >
                 Add
@@ -157,70 +144,77 @@ const CommentPage = (props) => {
               minHeight: 5 + "px",
               overflowY: "scroll",
             }}
+            key={props.index}
           >
             <ul key={props.index}>
               {commentDataForOnePost &&
                 commentDataForOnePost.map((value, index) => {
                   return (
-                    <li
-                      key={index}
-                      style={{ textAlign: "left", marginBottom: 2 + "px" }}
-                    >
-                      <div key={value.comment_uuid} className="outer">
-                        <div key={value.comment_uuid} className="one">
-                          {commentEdit &&
-                          editCommentId === value.comment_uuid ? (
-                            <input
-                              type="text"
-                              value={editCommentText}
-                              onChange={(e) =>
-                                setEditCommentText(e.target.value)
-                              }
-                              style={{ width: 95 + "%" }}
-                            />
-                          ) : editCommentText &&
+                    props.postid === value.post_id && (
+                      <li
+                        key={index}
+                        style={{ textAlign: "left", marginBottom: 2 + "px" }}
+                      >
+                        <div key={value.comment_uuid} className="outer">
+                          <div key={value.comment_uuid} className="one">
+                            {commentEdit &&
                             editCommentId === value.comment_uuid ? (
-                            editCommentText
-                          ) : (
-                            value.comment_text
-                          )}
-                        </div>
-                        {isLoggedIn ? (
-                          <div className="two">
-                            <button
-                              type="button"
-                              className="btn btn-primary btn-sm"
-                              onClick={() =>
-                                commentEdit
-                                  ? saveComment(
-                                      value.comment_uuid,
-                                      value.user_id
-                                    )
-                                  : editComment(
-                                      value.comment_uuid,
-                                      value.user_id,
-                                      value.comment_text
-                                    )
-                              }
-                            >
-                              {commentEdit &&
-                              editCommentId === value.comment_uuid
-                                ? "📁"
-                                : "✏️"}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-light btn-sm"
-                              onClick={() =>
-                                deleteComment(value.comment_uuid, value.user_id)
-                              }
-                            >
-                              ❌
-                            </button>
+                              <input
+                                type="text"
+                                value={editCommentText}
+                                onChange={(e) =>
+                                  setEditCommentText(e.target.value)
+                                }
+                                style={{ width: 95 + "%" }}
+                              />
+                            ) : editCommentText &&
+                              editCommentId === value.comment_uuid ? (
+                              editCommentText
+                            ) : (
+                              value.comment_text
+                            )}
                           </div>
-                        ) : null}
-                      </div>
-                    </li>
+                          {loggedInUserId ? (
+                            <div className="two">
+                              <button
+                                type="button"
+                                style={{ marginRight: 5 + "px" }}
+                                className="btn btn-primary btn-sm"
+                                onClick={() =>
+                                  commentEdit
+                                    ? saveComment(
+                                        value.comment_uuid,
+                                        value.user_id
+                                      )
+                                    : editComment(
+                                        value.comment_uuid,
+                                        value.user_id,
+                                        value.comment_text
+                                      )
+                                }
+                              >
+                                {commentEdit &&
+                                editCommentId === value.comment_uuid
+                                  ? "📁"
+                                  : "✏️"}
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-info btn-sm"
+                                onClick={() =>
+                                  deleteComment(
+                                    value.comment_uuid,
+                                    value.user_id
+                                  )
+                                }
+                              >
+                                ❌
+                              </button>
+                            </div>
+                          ) : null}
+                        </div>
+                      </li>
+                    )
                   );
                 })}
               {commentDataForOnePost !== undefined &&

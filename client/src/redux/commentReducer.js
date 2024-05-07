@@ -23,7 +23,7 @@ const commentReducer = createSlice({
         state.commentDataForOnePost = action.payload;
       }
     );
-    builder.addCase(getAllCommentsOfOnePostAction.rejected, (state, action) => {
+    builder.addCase(getAllCommentsOfOnePostAction.rejected, (state) => {
       state.status = "failed";
     });
 

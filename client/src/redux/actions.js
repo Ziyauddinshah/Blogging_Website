@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getPosts = createAsyncThunk(
-  "getPosts",
+export const getPostAction = createAsyncThunk(
+  "getPostAction",
   async (args, { rejectWithValue }) => {
     let config = {
       headers: {
@@ -21,9 +21,8 @@ export const getPosts = createAsyncThunk(
     }
   }
 );
-
-export const addPost = createAsyncThunk(
-  "addPost",
+export const addPostAction = createAsyncThunk(
+  "addPostAction",
   async (data, { rejectWithValue }) => {
     const config = {
       headers: {
@@ -47,8 +46,31 @@ export const addPost = createAsyncThunk(
   }
 );
 
-export const deletePost = createAsyncThunk(
-  "deletePost",
+export const editPostAction = createAsyncThunk(
+  "editPostAction",
+  async (data, { rejectWithValue }) => {
+    const config = {
+      headers: {
+        authorization: "Bearer " + data.jwt_token,
+      },
+    };
+    const response = await axios.put(
+      `http://localhost:3005/posts/edit?post_uuid=${data.post_uuid}`,
+      { post_text: data.post_text },
+      config
+    );
+    try {
+      const result = await response.data;
+      console.log("action",result);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deletePostAction = createAsyncThunk(
+  "deletePostAction",
   async (postid, { rejectWithValue }) => {
     let config = {
       headers: {

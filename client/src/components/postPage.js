@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deletePost } from "../redux/actions";
+import { deletePostAction } from "../redux/actions";
 import { useDispatch } from "react-redux";
 import { user_id_from_token } from "../services/userService";
 import CommentPage from "./commentPage";
@@ -27,7 +27,7 @@ const PostPage = (props) => {
     } else {
       if (user_id === loggedInUserId) {
         if (window.confirm("Do you want to delete this?")) {
-          dispatch(deletePost(postid));
+          dispatch(deletePostAction(postid));
         }
       } else {
         alert("You can not delete other`s post");
@@ -61,7 +61,7 @@ const PostPage = (props) => {
     <>
       <div
         key={props.index}
-        className="form-group bg-dark card row shadow rounded mb-2"
+        className="form-group bg-dark card row rounded mb-2"
       >
         <div className="mb-3 mt-3">
           <div>
@@ -73,24 +73,25 @@ const PostPage = (props) => {
             className="col-12 col-sm-6 col-md-12 p-2 bg-light card post"
             data-id="{val.post}"
           >
-            <div className="bg-light d-flex justify-content-between">
+            <div className="d-flex justify-content-between">
               <div>
                 <b>User Id: {props.user_id}</b>
               </div>
               <div>
                 <button
                   type="submit"
+                  style={{ marginRight: 5 + "px" }}
                   className="btn btn-primary"
                   onClick={() => EditPost(props.post_uuid, props.user_id)}
                 >
-                  Edit
+                  ✏️
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-danger border-success"
+                  className="btn btn-info"
                   onClick={() => DeletePost(props.post_uuid, props.user_id)}
                 >
-                  Delete
+                  ❌
                 </button>
               </div>
             </div>
@@ -98,7 +99,7 @@ const PostPage = (props) => {
             {props.post_text}
           </div>
         </div>
-        <div className="mb-3 mt-3">
+        <div className="mt-3">
           <CommentPage
             index={props.index}
             postid={props.post_uuid}

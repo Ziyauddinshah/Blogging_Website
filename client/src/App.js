@@ -26,6 +26,7 @@ function App() {
         <NavbarPage loggedInUser={loggedInUser} />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route
             path="/login"
             element={<LoginPage handleLogin={handleLogin} />}

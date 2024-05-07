@@ -130,7 +130,7 @@ async function deleteComment(req, res, next) {
                 message: "Something went wrong in deleteComment, syntax error",
               });
             } else {
-              getAll(req, res, next);
+              getAllCommentsByPostId(req, res, next);
               // console.log("result2: ", result2);
               // res.status(200).json({ message: "Comment deleted successfully" });
             }

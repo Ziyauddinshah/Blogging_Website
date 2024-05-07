@@ -54,25 +54,21 @@ async function editPost(req, res, next) {
     const query2 = "update posts set post_text=? where post_uuid=?";
     sql.query(query1, [post_uuid], (error1, result1) => {
       if (error1) {
-        // console.log("error1 in editPost: ", error1);
         return res
-          .status(400)
+          .status(202)
           .send({ message: "Something went wrong in editPost, syntax error" });
       } else {
         if (result1.length < 1) {
-          // console.log("result: ", result1);
           res
             .status(200)
-            .json({ message: "no post available with given uuid" });
+            .json({ message: "No post available with given uuid" });
         } else {
           sql.query(query2, [post_text, post_uuid], (error2, result2) => {
             if (error2) {
-              // console.log("error2 in editPost: ", error2);
-              return res.status(400).send({
+              return res.status(202).send({
                 message: "Something went wrong in editPost, syntax error",
               });
             } else {
-              // console.log("result: ", result.message);
               res.status(200).json({ message: "Post edited successfully" });
             }
           });

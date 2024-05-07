@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { editPost } from "../services/postService";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { editPostAction } from "../redux/actions";
 
 const PostEditPage = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const [textInput, setTextInput] = useState("");
-  //   const [postUUID, setPostUUID] = useState("");
   useEffect(() => {
     setTextInput(location.state.post_text);
-    // setPostUUID(location.state.post_uuid);
   }, [location]);
 
   const handleChange = (event) => {
@@ -17,18 +17,20 @@ const PostEditPage = () => {
 
   //edit post
   const EditPost = async (post_uuid) => {
-    editPost(post_uuid, textInput).then((response) => {
-      if (response.data.message) {
-        alert(response.data.message);
-        console.log(response.data.message);
-      }
-      setTextInput(textInput);
-    });
+    const jwt_token = localStorage.getItem("jwt_token");
+    const data = {
+      post_uuid: post_uuid,
+      post_text: textInput,
+      jwt_token: jwt_token,
+    };
+    dispatch(editPostAction(data));
+    setTextInput(textInput);
+    alert("Post Edited");
   };
 
   return (
     <div className="container col-md-6 mt-3">
-      <div className="form-group bg-dark card row shadow rounded mb-2">
+      <div className="form-group bg-info card row shadow rounded mb-2">
         <div className="mb-3 mt-3">
           <div>
             <h6 className="text-light" style={{ float: "left" }}>
@@ -44,6 +46,13 @@ const PostEditPage = () => {
                 <b>User Id: {location.state.user_id}</b>
               </div>
               <div>
+                <Link
+                  to={"/home"}
+                  className="btn btn-dark"
+                  style={{ marginRight: 5 + "px" }}
+                >
+                  Back
+                </Link>
                 <button
                   type="submit"
                   className="btn btn-primary"
