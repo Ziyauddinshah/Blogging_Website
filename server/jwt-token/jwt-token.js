@@ -3,18 +3,16 @@ const jwt = require("jsonwebtoken");
 
 var secretKey = "jwt-token-key";
 
-const generateJwtToken = (user_id, user_uuid, email, password) => {
-  const encryptedPassword = bcrypt.hash(password, 10);
-  let user = {
+const generateJwtToken = (user_uuid, email, firstname) => {
+  const user_data = {
     name: "Jwt-Token",
-    id: user_id,
     uuid: user_uuid,
     email: email.toLowerCase(),
-    password: encryptedPassword,
+    firstname: firstname,
   };
 
   // Create token
-  const token = jwt.sign(user, secretKey, { expiresIn: "2d" });
+  const token = jwt.sign(user_data, secretKey, { expiresIn: "2d" });
   return token;
 };
 
@@ -31,8 +29,6 @@ const verifyToken = (req, res, next) => {
         return res.status(202).send({ message: "Token expired" });
       } else {
         // console.log("Jwt token verified successfully");
-        res.locals.email = decoded.email;
-        res.locals.user_id = decoded.id;
         res.locals.user_uuid = decoded.uuid;
         next();
       }

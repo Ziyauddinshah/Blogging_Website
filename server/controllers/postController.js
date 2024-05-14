@@ -2,7 +2,7 @@ const sql = require("../database/db");
 
 async function getAll(req, res, next) {
   try {
-    const query = "select * from posts order by id asc";
+    const query = "select * from posts order by id desc";
     sql.query(query, [], (error, result) => {
       if (error) {
         // console.log("error in getAll posts: ", error);

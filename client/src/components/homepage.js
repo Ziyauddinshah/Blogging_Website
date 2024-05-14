@@ -14,16 +14,16 @@ const HomePage = () => {
   const [postText, setPostText] = useState("");
   let { postDataFromDB, message } = useSelector((state) => state.post);
   if (message === "Token expired") {
-    localStorage.removeItem("userName");
+    localStorage.removeItem("user_name");
     localStorage.removeItem("jwt_token");
     navigate("/login");
   }
   if (postDataFromDB) postDataFromDB = postDataFromDB.data;
+  const name = localStorage.getItem("user_name");
+  const jwt_token = localStorage.getItem("jwt_token");
   useEffect(() => {
     dispatch(getPostAction());
-    const name = localStorage.getItem("userName");
-    const jwt_token = localStorage.getItem("jwt_token");
-    if (name) {
+    if (jwt_token) {
       setUserName(name);
       setToken(jwt_token);
       getAllUserService(jwt_token).then((response) => {
@@ -31,8 +31,9 @@ const HomePage = () => {
         setUserData(data);
       });
     }
-  }, [dispatch]);
-  if (postDataFromDB && userData) {
+  }, [dispatch, jwt_token, name]);
+
+  if (postDataFromDB && userData && jwt_token) {
     const data = [];
     userData.forEach((user) => {
       postDataFromDB.forEach((post) => {
@@ -50,16 +51,19 @@ const HomePage = () => {
       });
     });
     postDataFromDB = data;
-    console.log(postDataFromDB);
   }
   // adding post into database
   const AddPost = () => {
     if (userName) {
-      const dataToPost = {
-        post_text: postText,
-        token: token,
-      };
-      dispatch(addPostAction(dataToPost));
+      if (postText) {
+        const dataToPost = {
+          post_text: postText,
+          token: token,
+        };
+        dispatch(addPostAction(dataToPost));
+      } else {
+        alert("Post input field can not be null");
+      }
     } else {
       alert("Login to post");
     }
@@ -99,7 +103,7 @@ const HomePage = () => {
                 post_uuid={val.post_uuid}
                 user_id={val.user_id}
                 post_text={val.post_text}
-                user_name={val.user_name}
+                user_name={val.user_name || ""}
               />
             );
           })}

@@ -14,7 +14,7 @@ import PostEditPage from "./components/postEditPage";
 function App() {
   const [loggedInUser, setLoggedInUser] = useState("");
   useEffect(() => {
-    setLoggedInUser(localStorage.getItem("userName"));
+    setLoggedInUser(localStorage.getItem("user_name"));
   }, []);
   const handleLogin = (username) => {
     setLoggedInUser(username);

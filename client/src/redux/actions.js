@@ -61,7 +61,7 @@ export const editPostAction = createAsyncThunk(
     );
     try {
       const result = await response.data;
-      console.log("action",result);
+      console.log("action", result);
       return result;
     } catch (error) {
       return rejectWithValue(error);

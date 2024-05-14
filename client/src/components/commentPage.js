@@ -20,21 +20,30 @@ const CommentPage = (props) => {
 
   let { commentDataForOnePost } = useSelector((state) => state.comment);
   commentDataForOnePost = commentDataForOnePost.data;
-
+  useEffect(() => {
+    if (props.loggedInUserId) {
+      setLoggedInUserId(props.loggedInUserId);
+    }
+  }, [props]);
   // adding comment into database
   const addComment = (postid) => {
-    if (loggedInUserId) {
-      const jwt_token = localStorage.getItem("jwt_token");
-      const data = {
-        post_uuid: postid,
-        comment_text: addCommentText,
-        jwt_token: jwt_token,
-      };
-      dispatch(addCommentAction(data));
-      setAddCommentText("");
-      alert("Comment Added");
+    const isLogin = localStorage.getItem("jwt_token");
+    const jwt_token = localStorage.getItem("jwt_token");
+    if (isLogin) {
+      if (addCommentText) {
+        const data = {
+          post_uuid: postid,
+          comment_text: addCommentText,
+          jwt_token: jwt_token,
+        };
+        dispatch(addCommentAction(data));
+        setAddCommentText("");
+        alert("Comment Added");
+      } else {
+        alert("Comment input can not be null");
+      }
     } else {
-      alert("Login first!");
+      alert("Unauthenticated user, Login first!");
     }
   };
 
@@ -47,24 +56,17 @@ const CommentPage = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (props.loggedInUserId) {
-      setLoggedInUserId(props.loggedInUserId);
-    }
-  }, [props]);
-
   const editComment = (comment_uuid, user_id, comment_text) => {
     if (loggedInUserId === user_id) {
       setCommentEdit(!commentEdit);
       setEditCommentId(comment_uuid);
       setEditCommentText(comment_text);
-      console.log("edit comment button is clicked ");
     } else {
-      alert("You can not edit other's post");
+      alert("Unauthorized user, You can not edit other's comment");
     }
   };
 
-  const saveComment = (comment_uuid, user_id) => {
+  const saveEditedComment = (comment_uuid, user_id) => {
     if (loggedInUserId === user_id) {
       setEditCommentId(comment_uuid);
       const jwt_token = localStorage.getItem("jwt_token");
@@ -78,7 +80,7 @@ const CommentPage = (props) => {
       alert("Comment Edited");
       setEditCommentText(editCommentText);
     } else {
-      alert("You can not edit other's comment");
+      alert("Unauthorize user, You can not edit other's comment");
       setCommentEdit(!commentEdit);
     }
   };
@@ -89,9 +91,12 @@ const CommentPage = (props) => {
       if (window.confirm("Do you want to delete this?")) {
         const data = { comment_uuid: comment_uuid, jwt_token: jwt_token };
         dispatch(deleteCommentAction(data));
+        commentDataForOnePost = commentDataForOnePost.filter(
+          (data) => data.comment_uuid !== comment_uuid
+        );
       }
     } else {
-      alert("You can not delete other's comment");
+      alert("Unauthorize user, You can not delete other's comment");
       setCommentEdit(!commentEdit);
     }
   };
@@ -182,7 +187,7 @@ const CommentPage = (props) => {
                                 className="btn btn-primary btn-sm"
                                 onClick={() =>
                                   commentEdit
-                                    ? saveComment(
+                                    ? saveEditedComment(
                                         value.comment_uuid,
                                         value.user_id
                                       )

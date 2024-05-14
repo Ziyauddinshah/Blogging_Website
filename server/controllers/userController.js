@@ -66,10 +66,10 @@ async function login(req, res, next) {
             message: "user with given email does not exist",
           });
         } else {
-          const user_password = result[0].password;
-          const user_id = result[0].id;
-          const user_uuid = result[0].uuid;
+          const user_uuid = result[0].user_uuid;
           const user_firstname = result[0].firstname;
+          const user_email = result[0].email;
+          const user_password = result[0].password;
           // Compare hashed password
           bcrypt.compare(password, user_password, (error2, isMatched) => {
             if (!isMatched || error2) {
@@ -79,12 +79,10 @@ async function login(req, res, next) {
                 .json({ message: "Invalid username or password" });
             } else {
               const jwt_Token = token.generateJwtToken(
-                user_id,
                 user_uuid,
-                email,
-                user_password
+                user_email,
+                user_firstname
               );
-              // console.log("jwt-token: ", jwt_Token);
               res.status(200).json({
                 message: "login successfully",
                 firstname: user_firstname,

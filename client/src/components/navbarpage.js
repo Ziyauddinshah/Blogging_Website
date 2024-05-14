@@ -8,7 +8,7 @@ const NavbarPage = ({ loggedInUser }) => {
   }, [loggedInUser]);
 
   const Logout = () => {
-    localStorage.removeItem("userName");
+    localStorage.removeItem("user_name");
     localStorage.removeItem("jwt_token");
     setUsername("");
   };

@@ -21,25 +21,25 @@ const PostPage = (props) => {
 
   // delete post
   const DeletePost = (postid, user_id) => {
-    let username = localStorage.getItem("userName");
+    let username = localStorage.getItem("user_name");
     if (username === null) {
-      alert("Unauthorize user!");
+      alert("Unauthenticated user, Login first");
     } else {
       if (user_id === loggedInUserId) {
         if (window.confirm("Do you want to delete this?")) {
           dispatch(deletePostAction(postid));
         }
       } else {
-        alert("You can not delete other`s post");
+        alert("Unauthorize user, You can not delete other`s post");
       }
     }
   };
 
   //edit post
   const EditPost = (postid, user_id, user_name) => {
-    let username = localStorage.getItem("userName");
+    let username = localStorage.getItem("user_name");
     if (username === null) {
-      alert("Unauthorize user!");
+      alert("Unauthenticated user, Login first");
     } else {
       if (user_id === loggedInUserId) {
         if (window.confirm("Do you want to edit this?")) {
@@ -53,7 +53,7 @@ const PostPage = (props) => {
           });
         }
       } else {
-        alert("You can not edit other`s post");
+        alert("Unauthorize user, You can not edit other`s post");
       }
     }
   };
@@ -78,25 +78,27 @@ const PostPage = (props) => {
               <div>
                 <b>User Name: {props.user_name}</b>
               </div>
-              <div>
-                <button
-                  type="submit"
-                  style={{ marginRight: 5 + "px" }}
-                  className="btn btn-primary"
-                  onClick={() =>
-                    EditPost(props.post_uuid, props.user_id, props.user_name)
-                  }
-                >
-                  ✏️
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-info"
-                  onClick={() => DeletePost(props.post_uuid, props.user_id)}
-                >
-                  ❌
-                </button>
-              </div>
+              {loggedInUserId ? (
+                <div>
+                  <button
+                    type="submit"
+                    style={{ marginRight: 5 + "px" }}
+                    className="btn btn-primary"
+                    onClick={() =>
+                      EditPost(props.post_uuid, props.user_id, props.user_name)
+                    }
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-info"
+                    onClick={() => DeletePost(props.post_uuid, props.user_id)}
+                  >
+                    ❌
+                  </button>
+                </div>
+              ) : null}
             </div>
             <hr />
             {props.post_text}

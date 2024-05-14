@@ -131,7 +131,6 @@ async function deleteComment(req, res, next) {
               });
             } else {
               getAllCommentsByPostId(req, res, next);
-              // console.log("result2: ", result2);
               // res.status(200).json({ message: "Comment deleted successfully" });
             }
           });

@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { login } from "../services/userService";
 
 const LoginPage = ({ handleLogin }) => {
-  const [emailId, setEmailId] = useState([]);
-  const [password, setPassword] = useState([]);
-  const [logincre, setLogincre] = useState([]);
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [logincre, setLogincre] = useState("");
 
   const Login = () => {
     login(emailId, password).then((response) => {
       if (response.data.message === "login successfully") {
-        localStorage.setItem("userName", response.data.firstname);
+        localStorage.setItem("user_name", response.data.firstname);
         localStorage.setItem("jwt_token", response.data.jwt_Token);
         setLogincre(response.data.message);
         const loginData = [response.data.firstname];
@@ -19,6 +19,8 @@ const LoginPage = ({ handleLogin }) => {
         setLogincre(response.data.message);
       }
     });
+    setEmailId("");
+    setPassword("");
   };
 
   const logincredential = () => {
