@@ -1,4 +1,4 @@
-const ShowComment = ({ postid }) => {
+const ShowCommentLikes = ({ postid }) => {
   return (
     <div>
       <h1>showing comment of post id {postid}</h1>
@@ -6,4 +6,4 @@ const ShowComment = ({ postid }) => {
   );
 };
 
-export default ShowComment;
+export default ShowCommentLikes;

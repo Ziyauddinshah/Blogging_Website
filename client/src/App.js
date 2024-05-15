@@ -7,7 +7,6 @@ import HomePage from "./components/homepage";
 import NavbarPage from "./components/navbarpage";
 import LoginPage from "./components/loginpage";
 import RegisterPage from "./components/registerpage";
-import JustCheck from "./components/justcheck";
 import PageNotFound from "./components/pageNotFound";
 import PostEditPage from "./components/postEditPage";
 
@@ -33,7 +32,6 @@ function App() {
           />
           <Route path="/edit-post" element={<PostEditPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/justcheck" element={<JustCheck />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
