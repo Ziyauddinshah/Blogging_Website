@@ -4,20 +4,33 @@ import { useDispatch } from "react-redux";
 import { user_id_from_token } from "../services/userService";
 import CommentPage from "./commentPage";
 import { useNavigate } from "react-router-dom";
+import {
+  addLikesOfPostService,
+  getLikePostService,
+  disLikesOfPostService,
+} from "../services/postService";
 
 const PostPage = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [likeCount, setLikeCount] = useState(0);
+  const [disLikeCount, setDisLikeCount] = useState(0);
   useEffect(() => {
+    const token = localStorage.getItem("jwt_token");
+    getLikePostService(props.post_uuid, token).then((response) => {
+      if (response.data.data[0]) {
+        setLikeCount(response.data.data[0].likes_count);
+      }
+    });
     async function fetchData() {
-      let token = localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("jwt_token");
       const response = await user_id_from_token(token);
       const id = await response.data.user_id;
       setLoggedInUserId(id);
     }
     fetchData();
-  }, []);
+  }, [props]);
 
   // delete post
   const DeletePost = (postid, user_id) => {
@@ -56,6 +69,23 @@ const PostPage = (props) => {
         alert("Unauthorize user, You can not edit other`s post");
       }
     }
+  };
+
+  const LikePost = (postid) => {
+    const token = localStorage.getItem("jwt_token");
+    addLikesOfPostService(postid, token).then((response) => {
+      if (response.data.data[0]) {
+        setLikeCount(response.data.data[0].likes_count);
+      }
+    });
+  };
+  const DisLikePost = (postid) => {
+    const token = localStorage.getItem("jwt_token");
+    disLikesOfPostService(postid, token).then((response) => {
+      if (response.data.data[0]) {
+        setDisLikeCount(response.data.data[0].likes_count);
+      }
+    });
   };
 
   return (
@@ -102,6 +132,22 @@ const PostPage = (props) => {
             </div>
             <hr />
             {props.post_text}
+          </div>
+          <div style={{ marginTop: 5 + "px" }}>
+            <button
+              className="btn btn-danger"
+              style={{ float: "left", marginRight: 2 + "px" }}
+              onClick={() => LikePost(props.post_uuid)}
+            >
+              {likeCount} Like
+            </button>
+            <button
+              className="btn btn-primary"
+              style={{ float: "left" }}
+              onClick={() => DisLikePost(props.post_uuid)}
+            >
+              {disLikeCount} Dislike
+            </button>
           </div>
         </div>
         <div className="mt-3">

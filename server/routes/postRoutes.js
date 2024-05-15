@@ -9,5 +9,8 @@ router.put("/edit", token.verifyToken, postController.editPost);
 router.delete("/delete", token.verifyToken, postController.deletePost);
 router.get("/get", token.verifyToken, postController.getPostById);
 router.get("/user", token.verifyToken, postController.getAllPostByUserId);
+router.get("/likes", postController.getAllLikesOfPostByPostId);
+router.post("/add-like", postController.addLikesOfPostByPostId);
+router.post("/add-dislike", postController.disLikesOfPostByPostId);
 
 module.exports = router;

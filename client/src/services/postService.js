@@ -68,10 +68,49 @@ const deleteCommentService = (comment_uuid, jwt_token) => {
   );
 };
 
+const getLikePostService = (post_id, jwt_token) => {
+  let config = {
+    headers: {
+      authorization: "Bearer " + jwt_token,
+    },
+  };
+  return axios.get(
+    `http://localhost:3005/posts/likes?post_id=${post_id}`,
+    config
+  );
+};
+
+const addLikesOfPostService = (post_id, jwt_token) => {
+  let config = {
+    headers: {
+      authorization: "Bearer " + jwt_token,
+    },
+  };
+  return axios.post(
+    `http://localhost:3005/posts/add-like?post_id=${post_id}`,
+    config
+  );
+};
+
+const disLikesOfPostService = (post_id, jwt_token) => {
+  let config = {
+    headers: {
+      authorization: "Bearer " + jwt_token,
+    },
+  };
+  return axios.post(
+    `http://localhost:3005/posts/add-like?post_id=${post_id}`,
+    config
+  );
+};
+
 export {
   addPost,
   editPost,
   addCommentService,
   editCommentService,
   deleteCommentService,
+  getLikePostService,
+  addLikesOfPostService,
+  disLikesOfPostService,
 };
