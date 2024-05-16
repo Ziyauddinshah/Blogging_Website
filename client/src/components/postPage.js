@@ -6,23 +6,32 @@ import CommentPage from "./commentPage";
 import { useNavigate } from "react-router-dom";
 import {
   addLikesOfPostService,
+  removeLikesOfPostService,
   getLikePostService,
-  disLikesOfPostService,
+  addDisLikesOfPostService,
+  removeDisLikesOfPostService,
 } from "../services/postService";
 
 const PostPage = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisLiked, setIsDisLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [disLikeCount, setDisLikeCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
-    getLikePostService(props.post_uuid, token).then((response) => {
-      if (response.data.data[0]) {
-        setLikeCount(response.data.data[0].likes_count);
-      }
-    });
+    getLikePostService(props.post_uuid, token)
+      .then((response) => {
+        if (response.data.data[0]) {
+          setLikeCount(response.data.data[0].likes_count);
+          setDisLikeCount(response.data.data[0].disLikes_count);
+        }
+      })
+      .catch((error) => {
+        console.log("error ", error);
+      });
     async function fetchData() {
       const token = localStorage.getItem("jwt_token");
       const response = await user_id_from_token(token);
@@ -71,21 +80,52 @@ const PostPage = (props) => {
     }
   };
 
-  const LikePost = (postid) => {
+  const AddLikePost = (postid) => {
     const token = localStorage.getItem("jwt_token");
-    addLikesOfPostService(postid, token).then((response) => {
-      if (response.data.data[0]) {
-        setLikeCount(response.data.data[0].likes_count);
-      }
-    });
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      addLikesOfPostService(postid, token).then((response) => {
+        if (response.data.data[0]) {
+          setLikeCount(response.data.data[0].likes_count);
+        }
+      });
+    }
   };
-  const DisLikePost = (postid) => {
+
+  const RemoveLikePost = (postid) => {
     const token = localStorage.getItem("jwt_token");
-    disLikesOfPostService(postid, token).then((response) => {
-      if (response.data.data[0]) {
-        setDisLikeCount(response.data.data[0].likes_count);
-      }
-    });
+    if (isLiked) {
+      setIsLiked(!isLiked);
+      removeLikesOfPostService(postid, token).then((response) => {
+        if (response.data.data[0]) {
+          setLikeCount(response.data.data[0].likes_count);
+        }
+      });
+    }
+  };
+
+  const AddDisLikePost = (postid) => {
+    const token = localStorage.getItem("jwt_token");
+    if (!isDisLiked) {
+      setIsDisLiked(!isDisLiked);
+      addDisLikesOfPostService(postid, token).then((response) => {
+        if (response.data.data[0]) {
+          setDisLikeCount(response.data.data[0].disLikes_count);
+        }
+      });
+    }
+  };
+
+  const RemoveDisLikePost = (postid) => {
+    const token = localStorage.getItem("jwt_token");
+    if (isDisLiked) {
+      setIsDisLiked(!isDisLiked);
+      removeDisLikesOfPostService(postid, token).then((response) => {
+        if (response.data.data[0]) {
+          setDisLikeCount(response.data.data[0].disLikes_count);
+        }
+      });
+    }
   };
 
   return (
@@ -134,20 +174,44 @@ const PostPage = (props) => {
             {props.post_text}
           </div>
           <div style={{ marginTop: 5 + "px" }}>
-            <button
-              className="btn btn-danger"
-              style={{ float: "left", marginRight: 2 + "px" }}
-              onClick={() => LikePost(props.post_uuid)}
-            >
-              {likeCount} Like
-            </button>
-            <button
-              className="btn btn-primary"
-              style={{ float: "left" }}
-              onClick={() => DisLikePost(props.post_uuid)}
-            >
-              {disLikeCount} Dislike
-            </button>
+            {isLiked ? (
+              <button
+                className="btn btn-success btn-sm"
+                style={{
+                  float: "left",
+                  marginRight: 2 + "px",
+                }}
+                onClick={() => RemoveLikePost(props.post_uuid)}
+              >
+                {likeCount} Liked
+              </button>
+            ) : (
+              <button
+                className="btn btn-danger btn-sm"
+                style={{ float: "left", marginRight: 2 + "px" }}
+                onClick={() => AddLikePost(props.post_uuid)}
+              >
+                {likeCount} Like
+              </button>
+            )}
+
+            {isDisLiked ? (
+              <button
+                className="btn btn-success btn-sm"
+                style={{ float: "left" }}
+                onClick={() => RemoveDisLikePost(props.post_uuid)}
+              >
+                {disLikeCount} Disliked
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary btn-sm"
+                style={{ float: "left" }}
+                onClick={() => AddDisLikePost(props.post_uuid)}
+              >
+                {disLikeCount} Dislike
+              </button>
+            )}
           </div>
         </div>
         <div className="mt-3">

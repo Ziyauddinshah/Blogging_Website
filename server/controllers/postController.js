@@ -216,9 +216,10 @@ async function getAllLikesOfPostByPostId(req, res, next) {
 async function addLikesOfPostByPostId(req, res, next) {
   try {
     const post_id = req.query.post_id;
+    const user_uuid = req.locals.user_uuid;
+    console.log(user_uuid);
     const query1 = "select * from post_likes where post_id=?";
-    const query2 =
-      "insert into post_likes(post_likes_uuid,post_id,likes_count) values(f_new_uuid(),?,?)";
+    const query2 = "insert into post_likes(post_id,likes_count) values(?,?)";
     const query3 = "update post_likes set likes_count=? where post_id=?";
 
     sql.query(query1, [post_id], (error1, result1) => {
@@ -263,29 +264,60 @@ async function addLikesOfPostByPostId(req, res, next) {
   }
 }
 
-async function disLikesOfPostByPostId(req, res, next) {
+async function removeLikesOfPostByPostId(req, res, next) {
   try {
     const post_id = req.query.post_id;
     const query1 = "select * from post_likes where post_id=?";
-    const query2 =
-      "insert into post_likes(post_likes_uuid,post_id,likes_count) values(f_new_uuid(),?,?)";
-    const query3 = "update post_likes set likes_count=? where post_id=?";
+    const query2 = "update post_likes set likes_count=? where post_id=?";
+    sql.query(query1, [post_id], (error1, result1) => {
+      if (error1) {
+        return res.status(400).send({
+          message:
+            "Something went wrong in removeLikesOfPostByPostId, syntax error",
+        });
+      } else {
+        const count = result1[0].likes_count - 1;
+        sql.query(query2, [count, post_id], (error2, result2) => {
+          if (error2) {
+            res.status(400).send({
+              message:
+                "Something went wrong in removeLikesOfPostByPostId, syntax error",
+            });
+          } else {
+            getAllLikesOfPostByPostId(req, res, next);
+          }
+        });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error fetching in removeLikesOfPostByPostId" });
+  }
+}
+
+async function addDisLikesOfPostByPostId(req, res, next) {
+  try {
+    const post_id = req.query.post_id;
+    const query1 = "select * from post_likes where post_id=?";
+    const query2 = "insert into post_likes(post_id,disLikes_count) values(?,?)";
+    const query3 = "update post_likes set disLikes_count=? where post_id=?";
 
     sql.query(query1, [post_id], (error1, result1) => {
       if (error1) {
-        // console.log("error1 in disLikesOfPostByPostId: ", error);
+        // console.log("error1 in addDisLikesOfPostByPostId: ", error);
         return res.status(400).send({
           message:
-            "Something went wrong in disLikesOfPostByPostId, syntax error",
+            "Something went wrong in addDisLikesOfPostByPostId, syntax error",
         });
       } else {
         if (result1.length === 0) {
           sql.query(query2, [post_id, 1], (error2, result2) => {
             if (error2) {
-              // console.log("error1 in disLikesOfPostByPostId: ", error);
+              // console.log("error1 in addDisLikesOfPostByPostId: ", error);
               res.status(400).send({
                 message:
-                  "Something went wrong in disLikesOfPostByPostId, syntax error",
+                  "Something went wrong in addDisLikesOfPostByPostId, syntax error",
               });
             } else {
               getAllLikesOfPostByPostId(req, res, next);
@@ -293,12 +325,12 @@ async function disLikesOfPostByPostId(req, res, next) {
             }
           });
         } else {
-          const count = result1[0].likes_count + 1;
+          const count = result1[0].disLikes_count + 1;
           sql.query(query3, [count, post_id], (error3, result3) => {
             if (error3) {
               res.status(400).send({
                 message:
-                  "Something went wrong in disLikesOfPostByPostId, syntax error",
+                  "Something went wrong in addDisLikesOfPostByPostId, syntax error",
               });
             } else {
               getAllLikesOfPostByPostId(req, res, next);
@@ -309,7 +341,41 @@ async function disLikesOfPostByPostId(req, res, next) {
       }
     });
   } catch (error) {
-    res.status(500).json({ error: "Error fetching in disLikesOfPostByPostId" });
+    res
+      .status(500)
+      .json({ error: "Error fetching in addDisLikesOfPostByPostId" });
+  }
+}
+
+async function removeDisLikesOfPostByPostId(req, res, next) {
+  try {
+    const post_id = req.query.post_id;
+    const query1 = "select * from post_likes where post_id=?";
+    const query2 = "update post_likes set disLikes_count=? where post_id=?";
+    sql.query(query1, [post_id], (error1, result1) => {
+      if (error1) {
+        return res.status(400).send({
+          message:
+            "Something went wrong in removeDisLikesOfPostByPostId, syntax error",
+        });
+      } else {
+        const count = result1[0].disLikes_count - 1;
+        sql.query(query2, [count, post_id], (error2, result2) => {
+          if (error2) {
+            res.status(400).send({
+              message:
+                "Something went wrong in removeDisLikesOfPostByPostId, syntax error",
+            });
+          } else {
+            getAllLikesOfPostByPostId(req, res, next);
+          }
+        });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error fetching in removeDisLikesOfPostByPostId" });
   }
 }
 
@@ -322,5 +388,7 @@ module.exports = {
   getAllPostByUserId,
   getAllLikesOfPostByPostId,
   addLikesOfPostByPostId,
-  disLikesOfPostByPostId,
+  removeLikesOfPostByPostId,
+  addDisLikesOfPostByPostId,
+  removeDisLikesOfPostByPostId,
 };
