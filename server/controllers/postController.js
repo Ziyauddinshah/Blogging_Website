@@ -1,3 +1,4 @@
+const database = require("../database/db");
 const sql = require("../database/db");
 
 async function getAll(req, res, next) {
@@ -216,49 +217,51 @@ async function getAllLikesOfPostByPostId(req, res, next) {
 async function addLikesOfPostByPostId(req, res, next) {
   try {
     const post_id = req.query.post_id;
+    console.log(req.locals.user_uuid);
     const user_uuid = req.locals.user_uuid;
+    console.log("post_id2");
     console.log(user_uuid);
-    const query1 = "select * from post_likes where post_id=?";
-    const query2 = "insert into post_likes(post_id,likes_count) values(?,?)";
-    const query3 = "update post_likes set likes_count=? where post_id=?";
-
-    sql.query(query1, [post_id], (error1, result1) => {
-      if (error1) {
-        // console.log("error1 in addLikesOfPostByPostId: ", error);
-        return res.status(400).send({
-          message:
-            "Something went wrong in addLikesOfPostByPostId, syntax error",
-        });
-      } else {
-        if (result1.length === 0) {
-          sql.query(query2, [post_id, 1], (error2, result2) => {
-            if (error2) {
-              // console.log("error1 in addLikesOfPostByPostId: ", error);
-              res.status(400).send({
-                message:
-                  "Something went wrong in addLikesOfPostByPostId, syntax error",
-              });
-            } else {
-              getAllLikesOfPostByPostId(req, res, next);
-              // res.status(200).json({ message: "success" });
-            }
-          });
-        } else {
-          const count = result1[0].likes_count + 1;
-          sql.query(query3, [count, post_id], (error3, result3) => {
-            if (error3) {
-              res.status(400).send({
-                message:
-                  "Something went wrong in addLikesOfPostByPostId, syntax error",
-              });
-            } else {
-              getAllLikesOfPostByPostId(req, res, next);
-              // res.status(200).json({ data: result3, message: "success" });
-            }
-          });
-        }
-      }
-    });
+    res.status(200).json({ message: "Success" });
+    // const query1 = "select * from post_likes where post_id=?";
+    // const query2 = "insert into post_likes(post_id,likes_count) values(?,?)";
+    // const query3 = "update post_likes set likes_count=? where post_id=?";
+    // sql.query(query1, [post_id], (error1, result1) => {
+    //   if (error1) {
+    //     // console.log("error1 in addLikesOfPostByPostId: ", error);
+    //     return res.status(400).send({
+    //       message:
+    //         "Something went wrong in addLikesOfPostByPostId, syntax error",
+    //     });
+    //   } else {
+    //     if (result1.length === 0) {
+    //       sql.query(query2, [post_id, 1], (error2, result2) => {
+    //         if (error2) {
+    //           // console.log("error1 in addLikesOfPostByPostId: ", error);
+    //           res.status(400).send({
+    //             message:
+    //               "Something went wrong in addLikesOfPostByPostId, syntax error",
+    //           });
+    //         } else {
+    //           getAllLikesOfPostByPostId(req, res, next);
+    //           // res.status(200).json({ message: "success" });
+    //         }
+    //       });
+    //     } else {
+    //       const count = result1[0].likes_count + 1;
+    //       sql.query(query3, [count, post_id], (error3, result3) => {
+    //         if (error3) {
+    //           res.status(400).send({
+    //             message:
+    //               "Something went wrong in addLikesOfPostByPostId, syntax error",
+    //           });
+    //         } else {
+    //           getAllLikesOfPostByPostId(req, res, next);
+    //           // res.status(200).json({ data: result3, message: "success" });
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
   } catch (error) {
     res.status(500).json({ error: "Error fetching in addLikesOfPostByPostId" });
   }

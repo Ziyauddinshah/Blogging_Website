@@ -17,10 +17,12 @@ const generateJwtToken = (user_uuid, email, firstname) => {
 };
 
 const verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"].split(" ")[1];
   try {
-    const token = req.headers["authorization"].split(" ")[1];
-    if (!token) {
-      return res.status(202).send("Access denied. No token provided");
+    if (token === null) {
+      return res
+        .status(202)
+        .send({ message: "Access denied. No token provided" });
     }
     const tokenToVerify = token;
     jwt.verify(tokenToVerify, secretKey, (error, decoded) => {
@@ -29,12 +31,13 @@ const verifyToken = (req, res, next) => {
         return res.status(202).send({ message: "Token expired" });
       } else {
         // console.log("Jwt token verified successfully");
+        console.log(decoded);
         res.locals.user_uuid = decoded.uuid;
         next();
       }
     });
-  } catch (ex) {
-    console.log("error ", ex);
+  } catch (error) {
+    console.log("error ", error);
     return res.status(400).send({ message: "Invalid token, login again" });
   }
 };

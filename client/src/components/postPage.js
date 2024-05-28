@@ -84,11 +84,14 @@ const PostPage = (props) => {
     const token = localStorage.getItem("jwt_token");
     if (!isLiked) {
       setIsLiked(!isLiked);
-      addLikesOfPostService(postid, token).then((response) => {
-        if (response.data.data[0]) {
-          setLikeCount(response.data.data[0].likes_count);
-        }
-      });
+      addLikesOfPostService(postid, token)
+        .then((response) => {
+          console.log(response);
+          if (response.data.data) {
+            setLikeCount(response.data.data[0].likes_count);
+          }
+        })
+        .catch((error) => console.log(error));
     }
   };
 
